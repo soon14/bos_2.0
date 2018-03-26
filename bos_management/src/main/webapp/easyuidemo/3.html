@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tabs选项卡面板</title>
+
+    <!-- 两个样式 -->
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <!-- 3个js -->
+    <script type="text/javascript" src="../js/jquery-easyui-dev/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+    <script type="text/javascript" >
+        $(function () {
+            //对链接绑定事件
+
+        });
+    </script>
+
+</head>
+
+<body class="easyui-layout">
+
+    <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">来自远方的孤狼</div>
+    <div data-options="region:'west',split:false,title:'天上人间'" style="width:200px">
+        <div class="easyui-accordion" data-options="fit:true">
+        <!-- 折叠样式 -->
+        <div data-options="title:'春暖花开'">
+            <!-- 选项的面板 -->
+            <a href="javascript:void(0)" id="play">玩一玩</a>
+
+        </div>
+
+        <div title="夏日炎炎" >
+            <p>The accordion allows you to provide multiple panels and display one at a time. Each panel has built-in
+                support
+                for expanding and collapsing. Clicking on a panel header to expand or collapse that panel body. The panel
+                content can be loaded via ajax by specifying a 'href' property. Users can define a panel to be selected. If
+                it
+                is not specified, then the first panel is taken by default.</p>
+        </div>
+
+        <div title="秋高气爽"   >
+            <p>仅仅是用于测试</p>
+        </div>
+        <div title="冬日可爱"   >
+            <p>仅仅是用于测试</p>
+        </div>
+
+        </div>
+
+    </div>
+    <div data-options="region:'east',split:true,collapsed:true,title:'地藏王'" style="width:100px;padding:10px;">无怨无悔</div>
+    <div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;">人生难得几回搏</div>
+    <div data-options="region:'center',title:'人生'">人生</div>
+
+</body>
+
+</html>
