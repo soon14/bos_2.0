@@ -1,36 +1,21 @@
-package io.maang.bos.web.action.base;
+package io.maang.bos.service.base;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ModelDriven;
 import io.maang.bos.domain.base.Standard;
-import org.apache.struts2.convention.annotation.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * 收派标准的action
+ * 收派标准的管理
  */
-@ParentPackage("struts-default")
-@Namespace("/")
-@Actions
-@Controller
-@Scope("prototype")
-public class StandardAction extends ActionSupport implements ModelDriven<Standard> {
 
-	//模型驱动
-	private Standard standard = new Standard();
+public interface StandardService  {
 
-	@Override
-	public Standard getModel() {
-		return standard;
-	}
 
-	@Action(value = "standard_save",
-			results = {@Result(name = "success",type = "redirect",
-					location = "./pages/base/standard.html")})
-	public String save() {
-		System.out.println("添加了收排标准"+standard.getName());
+	public void save(Standard standard);
 
-		return SUCCESS;
-	}
+
+
+    Page<Standard> findPageData(Pageable pageable);
+
+    Standard getOne(Integer id);
 }

@@ -1,41 +1,91 @@
-package io.maang.bos.domain.base;
+package io.maang.bos.web.action.base;
 
-import lombok.Data;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+import io.maang.bos.domain.base.Standard;
+import io.maang.bos.service.base.StandardService;
+import lombok.Setter;
+import org.apache.struts2.convention.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * @description:档案类，记录所有的分类信息，在子档中
+ * 收派标准的action
  */
-@Entity
-@Table(name = "T_ARCHIVE")
-@Data
-public class Archive {
-	@Id
-	@GeneratedValue
-	@Column(name = "C_ID")
-	private Integer id; // 主键
-	@Column(name = "C_ARCHIVE_NUM", unique = true )
-	private String archiveNum;// 档案编号
-	@Column(name = "C_ARCHIVE_NAME")
-	private String archiveName; // 档案名称
-	@Column(name = "C_REMARK")
-	private String remark; // 备注
-	@Column(name = "C_HASCHILD")
-	private Integer hasChild;// 是否分级 0代表不分级 1代表分级
-	@Column(name = "C_OPERATING_TIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date operatingTime;// 操作时间
-	@Column(name = "C_OPERATOR")
-	private String operator; // 操作员
-	@Column(name = "C_OPERATING_COMPANY")
-	private String operatingCompany; // 操作单位
+@ParentPackage("json-default")
+@Namespace("/")
+@Actions
+@Controller
+@Scope("prototype")
+public class StandardAction extends ActionSupport implements ModelDriven<Standard> {
 
-	@OneToMany(mappedBy = "archive")
-	private Set<SubArchive> subArchives = new HashSet<>(); // 子档案
+	//模型驱动
+	private Standard standard = new Standard();
+
+	@Override
+	public Standard getModel() {
+		return standard;
+	}
+
+	@Autowired
+	private StandardService standardService;
+
+
+
+	//查询操作
+	@Action(value = "standard_getOne",
+			results = {@Result(name = "success",type = "redirect",
+					location = "/bos_management/pages/base/standard.html")})
+	public java.lang.String getOne() {
+		Integer id = 2;
+		Standard one = standardService.getOne(id);
+		System.out.println(one);
+		return SUCCESS;
+	}
+
+	//添加操作
+	@Action(value = "standard_save",
+			results = {@Result(name = "success",type = "redirect",
+					location = "/bos_management/pages/base/standard.html")})
+	public java.lang.String save() {
+		standardService.save(standard);
+		return SUCCESS;
+	}
+
+	@Setter
+	private Integer page;
+	@Setter
+	private Integer rows;
+
+	//分页列表查询
+	@Action(value = "standard_pageQuery",results = {@Result(name = "success",type = "json")})
+	public String pageQuery() {
+
+		//调用业务层查询结果
+
+		//1.调用业务层查询当前页的数据
+		Pageable pageable = new PageRequest(page-1, rows);
+		Page<Standard> standards = standardService.findPageData(pageable);
+
+		//2.返回客户端需要的total 和 rows
+		Map<String, Object> map = new HashMap<>();
+		map.put("total", standards.getTotalElements());
+		map.put("rows", standards.getContent());
+
+		//3.将map转换为json数据返回 使用struts2提供的插件
+		ActionContext.getContext().getValueStack().push(map);
+
+
+		return SUCCESS;
+	}
 
 
 }

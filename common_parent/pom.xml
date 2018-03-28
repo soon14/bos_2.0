@@ -99,19 +99,34 @@
         </dependency>
 
         <!-- struts2 框架 -->
+        <!-- struts2 的核心包-->
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>
             <version>${struts2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>javassist</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- spring整合struts2的包-->
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-spring-plugin</artifactId>
             <version>${struts2.version}</version>
         </dependency>
+        <!-- struts2的注解开发 -->
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-convention-plugin</artifactId>
+            <version>${struts2.version}</version>
+        </dependency>
+        <!-- 转换json插件 -->
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-json-plugin</artifactId>
             <version>${struts2.version}</version>
         </dependency>
 
@@ -192,6 +207,7 @@
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
+
 
         <!-- 单元测试  -->
         <dependency>
