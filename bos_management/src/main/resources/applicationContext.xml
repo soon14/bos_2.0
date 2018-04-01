@@ -15,7 +15,7 @@
 		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 <!-- 扫描 @Server @Controller @Repository -->
-	<context:component-scan base-package="io.maang"/>
+	<context:component-scan base-package="io.maang.bos"/>
 
 	<!-- 加载properties文件 -->
 	<context:property-placeholder location="classpath:config.properties" />

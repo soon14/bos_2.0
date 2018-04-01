@@ -16,20 +16,33 @@ public class StandardRepositoryTest {
     @Autowired
     private StandardRepository standardRepository;
 
+    @Autowired
+    private CourierRepository courierRepository;
+
+    @Test
+    public void findAllTest(){
+        List<Standard> all = standardRepository.findAll();
+        System.out.println(all);
+
+    }
+
+
+
+
     //测试懒加载
     //javassist冲突解决问题
     //could not initialize proxy - no Session问题  添加OpenEntityManagerInViewFilter
-//    懒加载的问题解决
-//    注意:一定要放在struts2过滤器上面
-//            否则还是会产生nosession问题
+    //    懒加载的问题解决
+    //    注意:一定要放在struts2过滤器上面
+    //     否则还是会产生nosession问题
     @Test
     public void getOneTest(){
         //需要服务器启动才可测试
         System.out.println("hell年后吃饭");
 //        Standard one = standardRepository.getOne(2);
 //        System.out.println(one);
-
-
+        List<Standard> findall = standardRepository.findall();
+        System.out.println(findall);
     }
 
     //测试查询一个

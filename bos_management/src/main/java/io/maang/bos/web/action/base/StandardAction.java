@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,12 +53,10 @@ public class StandardAction extends ActionSupport implements ModelDriven<Standar
 	}
 
 	//添加操作
-	@Action(value = "standard_save",
-			results = {@Result(name = "success",type = "redirect",
-					location = "/bos_management/pages/base/standard.html")})
+	@Action(value = "standard_save")
 	public java.lang.String save() {
 		standardService.save(standard);
-		return SUCCESS;
+		return NONE;
 	}
 
 	@Setter
@@ -82,10 +81,18 @@ public class StandardAction extends ActionSupport implements ModelDriven<Standar
 
 		//3.将map转换为json数据返回 使用struts2提供的插件
 		ActionContext.getContext().getValueStack().push(map);
-
-
 		return SUCCESS;
 	}
+
+	//查询所有的收派标准
+	@Action(value = "standard_findAll",
+			results = {@Result(name = "success",type = "json")})
+	public String findAll() {
+		List<Standard> standards = standardService.findAll();
+		ActionContext.getContext().getValueStack().push(standards);
+		return SUCCESS;
+	}
+
 
 
 }

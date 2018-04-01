@@ -40,15 +40,22 @@
                     //判断所有的表单都通过验证
                     if($('#standartForm').form('validate')){
                         //通过校验
-						$('#standartForm').submit();
-					} else {
+						//$('#standartForm').submit();  jquery的同步方法提交
+						//使用easyui的异步提交
+                        $('#standartForm').form('submit', {
+                            success:function () {
+                                //关闭window并刷新
+                                $("#standardWindow").window("close");
+                                $('#grid').datagrid('reload');
+                            }
+						}
+                     );
+
+                    } else {
                         $.messager.alert("警告", "表单中还存在一些非法内容", "warning");
 					}
                         });
-
-			});	
-
-
+			});
 
 			//工具栏
 			var toolbar = [ {
@@ -56,6 +63,8 @@
 				text : '增加',
 				iconCls : 'icon-add',
 				handler : function(){
+				    //清空表单的回显
+                    $('#standardWindow').form("clear");
 					//测出弹框一个window
                     $('#standardWindow').window('open');
 				}

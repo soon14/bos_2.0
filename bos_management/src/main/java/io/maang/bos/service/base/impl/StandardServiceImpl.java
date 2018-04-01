@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 收派标准的管理
  */
@@ -38,4 +40,9 @@ public class StandardServiceImpl implements StandardService {
 		Standard one = standardRepository.getOne(id);
 		return one;
 	}
+
+    @Override
+    public List<Standard> findAll() {
+        return standardRepository.findAll();
+    }
 }

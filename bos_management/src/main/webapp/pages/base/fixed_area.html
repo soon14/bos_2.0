@@ -18,26 +18,26 @@
 			function doAdd(){
 				$('#addWindow').window("open");
 			}
-			
+
 			function doEdit(){
 				alert("修改...");
 			}
-			
+
 			function doDelete(){
 				alert("删除...");
 			}
-			
+
 			function doSearch(){
 				$('#searchWindow').window("open");
 			}
-			
+
 			function doAssociations(){
 				$('#customerWindow').window('open');
 			}
-			
+
 			//工具栏
 			var toolbar = [ {
-				id : 'button-search',	
+				id : 'button-search',
 				text : '查询',
 				iconCls : 'icon-search',
 				handler : doSearch
@@ -47,7 +47,7 @@
 				iconCls : 'icon-add',
 				handler : doAdd
 			}, {
-				id : 'button-edit',	
+				id : 'button-edit',
 				text : '修改',
 				iconCls : 'icon-edit',
 				handler : doEdit
@@ -66,11 +66,11 @@
 				text : '关联快递员',
 				iconCls : 'icon-sum',
 				handler : function(){
-					// 判断是否已经选中了一个定区，弹出关联快递员窗口 
+					// 判断是否已经选中了一个定区，弹出关联快递员窗口
 					var rows = $("#grid").datagrid('getSelections');
 					if(rows.length==1){
 						// 只选择了一个定区
-						// 弹出定区关联快递员 窗口 
+						// 弹出定区关联快递员 窗口
 						$("#courierWindow").window('open');
 					}else{
 						// 没有选中定区，或者选择 了多个定区
@@ -114,11 +114,11 @@
 				width : 120,
 				align : 'center'
 			} ] ];
-			
+
 			$(function(){
 				// 先将body隐藏，再显示，不会出现页面刷新效果
 				$("body").css({visibility:"visible"});
-				
+
 				// 定区数据表格
 				$('#grid').datagrid( {
 					iconCls : 'icon-forward',
@@ -134,7 +134,7 @@
 					columns : columns,
 					onDblClickRow : doDblClickRow
 				});
-				
+
 				// 添加、修改定区
 				$('#addWindow').window({
 			        title: '添加修改定区',
@@ -145,7 +145,7 @@
 			        height: 400,
 			        resizable:false
 			    });
-				
+
 				// 查询定区
 				$('#searchWindow').window({
 			        title: '查询定区',
@@ -159,9 +159,29 @@
 				$("#btn").click(function(){
 					alert("执行查询...");
 				});
-				
+
+				//为保存按钮添加事件
+				$("#save").click(function () {
+					//先校验表单
+					if ($("#fixedAreaForm").form("validate")) {
+					    //提交
+							//使用easyui的异步提交
+                        $('#fixedAreaForm').form('submit', {
+                            success:function () {
+                                //关闭window并刷新
+                                $("#addWindow").window("close");
+                                $('#grid').datagrid('reload');
+                            }
+						}
+                     );
+					} else {
+					    //提示用户
+                        $.messager.alert("警告", "您输入了非法字符", "warning");
+					}
+                });
+
 			});
-		
+
 			function doDblClickRow(){
 				alert("双击表格数据...");
 				$('#association_subarea').datagrid( {
@@ -288,7 +308,7 @@
 							if(row.standard != null){
 								return row.standard.name;
 							}
-							return null ; 
+							return null ;
 						}
 					}, {
 						field : 'taketime.name',
@@ -299,7 +319,7 @@
 							if(row.taketime != null){
 								return row.taketime.name;
 							}
-							return null ; 
+							return null ;
 						}
 					}, {
 						field : 'company',
@@ -339,7 +359,7 @@
 			</div>
 
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form>
+				<form id="fixedAreaForm" action="/bos_management/fixedArea_save.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">定区信息</td>
@@ -443,17 +463,17 @@
 				</form>
 			</div>
 		</div>
-		
+
 		<!-- 关联快递员窗口 -->
 		<div class="easyui-window" title="关联快递员窗口" id="courierWindow" modal="true"
 			collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 700px;height: 300px;">
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form id="courierForm" 
+				<form id="courierForm"
 					action="../../fixedArea_associationCourierToFixedArea.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">关联快递员</td>
-						</tr> 
+						</tr>
 						<tr>
 							<td>选择快递员</td>
 							<td>
