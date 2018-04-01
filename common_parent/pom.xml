@@ -11,6 +11,8 @@
 
     <modules>
         <module>../bos_management</module>
+        <module>../crm_domain</module>
+        <module>../crm_management</module>
     </modules>
 
     <name>common_parent</name>
