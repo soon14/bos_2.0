@@ -1,6 +1,7 @@
 package io.maang.bos.domain.base;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "T_FIXED_AREA")
-@Data
+@Setter@Getter
 public class FixedArea {
 
 	@Id

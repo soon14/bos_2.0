@@ -10,6 +10,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 描述:
  *
@@ -49,5 +56,19 @@ public class CourierServiceImpl implements CourierService {
             Courier one = courierRepository.findOne(id);
             one.setDeltag(null);
         }
+    }
+
+    @Override
+    public List<Courier> findNoAssociation() {
+        //封装查询条件
+        Specification<Courier> specification = new Specification<Courier>() {
+            @Override
+            public Predicate toPredicate(Root<Courier> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                //查询条件判断列表size为空
+                Predicate predicate = cb.isEmpty(root.get("fixedAreas").as(Set.class));
+                return predicate;
+            }
+        };
+        return courierRepository.findAll(specification);
     }
 }

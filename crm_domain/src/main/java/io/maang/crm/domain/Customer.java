@@ -3,6 +3,7 @@ package io.maang.crm.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 /**
@@ -12,6 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "T_CUSTOMER")
 @Data
+@XmlRootElement(name = "customer")
 public class Customer {
 	@Id
 	@GeneratedValue()

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface StandardRepository extends JpaRepository<Standard,Integer> {
 
-    @Query(value = "from Standard",nativeQuery = false)
+    @Query(value = "from Standard")
     List<Standard> findall();
 }
