@@ -26,4 +26,5 @@ public interface CustomerRepository extends JpaRepository<Customer,Integer> {
     @Modifying
     void updateType(String telephone);
 
+    Customer findByTelephoneAndPassword(String telephone, String password);
 }

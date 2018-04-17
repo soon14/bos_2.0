@@ -26,9 +26,6 @@ public class StandardRepositoryTest {
 
     }
 
-
-
-
     //测试懒加载
     //javassist冲突解决问题
     //could not initialize proxy - no Session问题  添加OpenEntityManagerInViewFilter
@@ -51,9 +48,8 @@ public class StandardRepositoryTest {
 
         Standard one = standardRepository.findOne(2);
         System.out.println(one);
-
-
     }
+
 
     //测试查询所有
     @Test

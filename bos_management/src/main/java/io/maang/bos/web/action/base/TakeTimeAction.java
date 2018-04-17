@@ -2,7 +2,7 @@ package io.maang.bos.web.action.base;
 
 import com.opensymphony.xwork2.ActionContext;
 import io.maang.bos.domain.base.TakeTime;
-import io.maang.bos.service.TakeTimeService;
+import io.maang.bos.service.base.TakeTimeService;
 import io.maang.bos.web.action.common.BaseAction;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;

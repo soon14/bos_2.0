@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <!-- 扫描包 -->
+    <context:component-scan base-package="io.maang.bos.mq"/>
+
+    <!-- ActiveMQ 链接工厂 -->
+    <!-- 真正可以产生Connection的ConnectionFactory,由对应的jms厂商服务厂商提供 -->
+    <!-- 如果连接网络:tcp://ip:61616; 未连接网络:tcp://localhost:61616 以及用户名,密码 -->
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="tcp://localhost:61616" userName="admin"
+                           password="admin"/>
+
+    <!-- spring caching连接工厂 -->
+    <!-- spring用于管理真正的ConnectionFactory的connectionFactory -->
+    <bean id="mqConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <!-- 目标ConnectionFactory对应真实可以产生JMS Connection的ConnectionFactory -->
+        <property name="targetConnectionFactory" ref="amqConnectionFactory"/>
+        <!-- 同上,同理 -->
+        <!--<constructor-arg ref="amqConnectionFactory"/>-->
+        <!-- session的缓存数量 -->
+        <property name="sessionCacheSize" value="100"/>
+    </bean>
+
+    <!-- 定义 Queue的监听器 -->
+    <jms:listener-container destination-type="queue" container-type="default"
+                            connection-factory="mqConnectionFactory" acknowledge="auto">
+        <!-- 默认注册bean的名字,是类的首字母小写 -->
+        <jms:listener destination="bos_sms" ref="smsComsumer"/>
+    </jms:listener-container>
+
+</beans>

@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-		http://www.springframework.org/schema/data/jpa 
+		http://www.springframework.org/schema/data/jpa
 		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 <!-- 扫描 @Server @Controller @Repository -->
@@ -87,5 +87,11 @@
 
 	<!-- 整合spring data jpa -->
 	<jpa:repositories base-package="io.maang.bos.dao" />
-	
+
+	<!-- 导入webservice -->
+	<import resource="applicationContext-webService.xml"/>
+
+	<!-- 导入quartz定时任务 -->
+	<import resource="applicationContext-quartz.xml"/>
+
 </beans>

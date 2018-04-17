@@ -1,7 +1,7 @@
 package io.maang.bos.web.action;
 
+import io.maang.bos.domain.constant.Constant;
 import io.maang.bos.utils.MailUtils;
-import io.maang.bos.utils.SmsUtils;
 import io.maang.crm.domain.Customer;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -12,10 +12,17 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +42,9 @@ public class CustomerAction extends BaseAction<Customer> {
 
     @Setter
     private String checkcode;
-
+    @Autowired
+    @Qualifier("jmsQueueTemplate")
+    private JmsTemplate jmsTemplate;
 
     @Action("customer_sendSms")
     public String sendSms() throws UnsupportedEncodingException {
@@ -49,14 +58,17 @@ public class CustomerAction extends BaseAction<Customer> {
         //编辑短信内容
         String msg = "尊敬的用户本次您的验证码是:" + randomCode + ",服务电话是:13242342";
 
-        //调用sms服务发送短信
-        String result = SmsUtils.sendSmsByHTTP(model.getMobilePhone(), msg);
-        if (result.startsWith("000")) {
-            //发送成功
-            return NONE;
-        } else {
-            throw new RuntimeException("短信发送失败,信息码是:" + result);
-        }
+        //调用mq服务发送一条消息
+        jmsTemplate.send("bos_sms", new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                MapMessage mapMessage =  session.createMapMessage();
+                mapMessage.setString("telephone",model.getTelephone() );
+                mapMessage.setString("msg",msg );
+                return mapMessage;
+            }
+        });
+        return NONE;
     }
 
     @Autowired
@@ -76,7 +88,7 @@ public class CustomerAction extends BaseAction<Customer> {
         }
         //调用webservice 连接crm保存客户
         WebClient
-                .create("http://localhost:9002/crm_management/services/customerService/customer").type(MediaType.APPLICATION_JSON).post(model);
+                .create(Constant.CRM_MANAGEMENT_URL+"/services/customerService/customer").type(MediaType.APPLICATION_JSON).post(model);
 
         System.out.println("客户注册成功");
         //发送一个激活邮箱
@@ -110,13 +122,13 @@ public class CustomerAction extends BaseAction<Customer> {
             //防止重复绑定
             //调用crm webservice 查询客户信息,判读是否绑定了
             Customer customer = WebClient
-                    .create("http://localhost:9002/crm_management/services/customerService/customer/telephone/"+model.getTelephone())
+                    .create(Constant.CRM_MANAGEMENT_URL+"/services/customerService/customer/telephone/"+model.getTelephone())
                     .accept(MediaType.APPLICATION_JSON)
                     .get(Customer.class);
             if (customer.getType()==null||customer.getType()!=1){
                 //没有绑定 进行绑定
                 WebClient
-                        .create("http://localhost:9002/crm_management/services/customerService/customer/updatetype/"+model.getTelephone())
+                        .create(Constant.CRM_MANAGEMENT_URL+"/services/customerService/customer/updatetype/"+model.getTelephone())
                         .accept(MediaType.APPLICATION_JSON)
                         .put(null);
                 ServletActionContext.getResponse().getWriter().println("恭喜你绑定成功!");
@@ -128,5 +140,26 @@ public class CustomerAction extends BaseAction<Customer> {
             redisTemplate.delete(model.getTelephone());
 
         }
+    }
+
+    //客户登陆
+    @Action(value = "customer_login",results = {
+            @Result(name = "login",location = "login.html",type = "redirect"),
+            @Result(name = "success",location = "index.html#/myhome",type = "redirect")})
+    public String login() {
+        Customer customer = WebClient
+                .create(Constant.CRM_MANAGEMENT_URL
+                        +"/services/customerService/customer/login?telephone="
+                        +model.getTelephone()+"&password="+model.getPassword())
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Customer.class);
+        if (customer == null) {
+            //登陆失败
+            System.out.println("登陆失败");
+        }else {
+            //登陆成功
+            ServletActionContext.getRequest().getSession().setAttribute("customer", customer);
+        }
+        return SUCCESS;
     }
 }
