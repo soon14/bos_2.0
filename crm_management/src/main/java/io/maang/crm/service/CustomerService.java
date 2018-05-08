@@ -57,5 +57,8 @@ public interface CustomerService {
     @Produces({"application/xml","application/json"})
     Customer login(@QueryParam("telephone") String telephone,@QueryParam("password") String password);
 
-
+    @GET
+    @Path("/customer/findFixedAreaIdByAddress")
+    @Produces({"application/xml","application/json"})
+    String findFixedAreaIdByAddress(@QueryParam("address") String address);
 }

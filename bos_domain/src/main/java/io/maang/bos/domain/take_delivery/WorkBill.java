@@ -2,7 +2,8 @@ package io.maang.bos.domain.take_delivery;
 
 
 import io.maang.bos.domain.base.Courier;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "T_WORK_BILL")
-@Data
+@Setter@Getter
 public class WorkBill {
 	@Id
 	@GeneratedValue

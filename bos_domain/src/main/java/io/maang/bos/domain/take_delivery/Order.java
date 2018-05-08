@@ -2,9 +2,11 @@ package io.maang.bos.domain.take_delivery;
 
 import io.maang.bos.domain.base.Area;
 import io.maang.bos.domain.base.Courier;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,12 +16,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "T_ORDER")
-@Data
+@Getter@Setter
+@XmlRootElement(name = "order")
 public class Order {
 	@Id
 	@GeneratedValue
 	@Column(name = "C_ID")
 	private Integer id;// 主键
+
 	@Column(name = "C_ORDER_NUM")
 	private String orderNum;// 订单号
 

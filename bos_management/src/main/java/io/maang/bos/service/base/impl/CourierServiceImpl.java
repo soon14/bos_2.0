@@ -3,6 +3,7 @@ package io.maang.bos.service.base.impl;
 import io.maang.bos.dao.base.CourierRepository;
 import io.maang.bos.domain.base.Courier;
 import io.maang.bos.service.base.CourierService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,9 @@ public class CourierServiceImpl implements CourierService {
 
     @Autowired
     private CourierRepository courierRepository;
+
     @Override
+    @RequiresPermissions("courier_add")
     public void save(Courier courier) {
         courierRepository.save(courier);
     }

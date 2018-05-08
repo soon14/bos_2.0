@@ -1,6 +1,7 @@
 package io.maang.bos.domain.base;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "T_SUB_AREA")
-@Data
+@Getter@Setter
 public class SubArea {
 
 	@Id

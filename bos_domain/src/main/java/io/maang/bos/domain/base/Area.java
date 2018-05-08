@@ -1,8 +1,10 @@
 package io.maang.bos.domain.base;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +14,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "T_AREA")
-@Data
+@Getter@Setter
+@XmlRootElement(name = "area")
 public class Area {
 
 	@Id

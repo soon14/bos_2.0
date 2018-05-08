@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/data/elasticsearch
+        http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch-1.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置shiro的核心filter -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 安全管理器 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 未认证跳转到哪个页面 -->
+        <property name="loginUrl" value="/login.html"/>
+        <!-- 成功跳转到页面 -->
+        <property name="successUrl" value="/index.html"/>
+        <!-- 认证后没有权限跳转的页面 -->
+        <property name="unauthorizedUrl" value="/unautnorized.html"/>
+        <!-- shiro的url控制过滤规则 -->
+        <property name="filterChainDefinitions">
+            <value>
+                /login.html* = anon
+                /user_login.action* = anon
+                /validatecode.jsp = anon
+                /css/** = anon
+                /js/** = anon
+                /images/** = anon
+                /services/** = anon
+                /pages/base/courier.html* = perms[courier:list]
+                /pages/base/area.html* = roles[base]
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+    <!-- 开启shiro注解模式 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+
+    <!-- 配置安全管理器 -->
+    <bean name="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="bosRealm"/>
+    </bean>
+
+    <!-- 后处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+</beans>

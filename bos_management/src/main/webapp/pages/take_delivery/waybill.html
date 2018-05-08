@@ -25,11 +25,53 @@
 				// 对save按钮条件 点击事件
 				$('#save').click(function() {
 					// 对form 进行校验
-					if($('#orderForm').form('validate')) {
-						$('#orderForm').submit();
-					}
+					$.post("/bos_management/wayBill_save.action",$('#wayBillForm').serialize(),function (data) {
+						if (data.success) {
+						    //保存成功
+							$.messager.show({
+								title:'提示窗口',
+								msg:data.msg
+							});
+							//重置表单
+                            $('#wayBillForm').get(0).reset();
+                            $("input[name='order.id']").val('');
+						}
+                    });
 				});
-			});
+
+				//对订单输入项添加blur事件
+				$('#orderNum').blur(function () {
+					//发起Ajax请求
+					$.post("/bos_management/order_findByOrderNum.action" ,{orderNum:$(this).val()},function (data) {
+						//封装结果数据{success:true,orderData:{} }
+						if (data.success){
+						    //装载数据
+							$('#wayBillForm').form('load',data.orderData);
+							//处理无法加载的load元素
+                            $("input[name='order.id']").val(data.orderData.id);
+                            $("input[name='order.orderNum']").val(data.orderData.orderNum);
+                            $("input[name='order.courier.company']").val(data.orderData.courier.orderNum);
+                            $("input[name='order.courier.name']").val(data.orderData.courier.name);
+						}else {
+						    //订单号不存在重置表单
+                            $('#wayBillForm').get(0).reset();
+						}
+                    });
+                });
+
+				//对运单输入项添加blur事件
+				$('#wayBillNum').blur(function () {
+					//发起Ajax请求
+					$.post("/bos_management/waybill_findByWayBillNum.action",{wayBillNum:$(this).val()},function (data) {
+						//封装的数据{success:true,wayBillData:{} }
+                        if (data.success) {
+                            //装载数据
+                            $('#wayBillForm').form('load', data.wayBillData);
+                        }
+                    });
+                });
+			 });
+
 		</script>
 	</head>
 
@@ -39,6 +81,7 @@
 			<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
 			<a id="no" icon="icon-no" href="#" class="easyui-linkbutton" plain="true">取消</a>
 		</div>
+		<form action="/bos_management/wayBill_save.action" id="wayBillForm" method="post">
 		<div style="width:95%;margin:10px auto">
 			<div class="table-top">
 				<table class="table-edit" width="95%">
@@ -49,10 +92,11 @@
 						<td>订单号</td>
 						<td>
 							<input type="hidden" name="order.id" id="orderId" />
-							<input type="text" name="order.orderNum" />
+							<input type="text" name="order.orderNum" id="orderNum" />
 						</td>
 						<td>运单号</td>
 						<td>
+							<input type="hidden" name="id"/>
 							<input type="text" name="wayBillNum" id="wayBillNum"/>
 						</td>
 					</tr>
@@ -214,7 +258,7 @@
 									<option value="0">现结</option>
 									<option value="1">代付</option>
 									<option value="2">网络</option>
-									
+
 								</select>
 							</td>
 							<td>代收款</td>
@@ -265,8 +309,9 @@
 					</table>
 				</div>
 			</div>
-			<div class="clearfix"></div>		
+			<div class="clearfix"></div>
 		</div>
+	</form>
 	</body>
 
 </html>
